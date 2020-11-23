@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_background.model.dao.mapper.BannerMapper">
+  <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Banner">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="delete_time" jdbcType="INTEGER" property="deleteTime" />
+    <result column="update_time" jdbcType="INTEGER" property="updateTime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from banner
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.seu.alumni_background.model.dao.entity.Banner">
+    insert into banner (id, name, description, 
+      delete_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{deleteTime,jdbcType=INTEGER}, #{updateTime,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.seu.alumni_background.model.dao.entity.Banner">
+    update banner
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      delete_time = #{deleteTime,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, name, description, delete_time, update_time
+    from banner
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, description, delete_time, update_time
+    from banner
+  </select>
+  <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Banner">
+    <result column="banner_id" jdbcType="BIGINT" property="bannerId" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="link" jdbcType="VARCHAR" property="link" />
+    <result column="valid_status" jdbcType="BIT" property="validStatus" />
+    <result column="c_time" jdbcType="TIMESTAMP" property="cTime" />
+    <result column="u_time" jdbcType="TIMESTAMP" property="uTime" />
+  </resultMap>
+  <insert id="insert" parameterType="cn.edu.seu.alumni_background.model.dao.entity.Banner">
+    insert into banner (banner_id, img, link, 
+      valid_status, c_time, u_time
+      )
+    values (#{bannerId,jdbcType=BIGINT}, #{img,jdbcType=VARCHAR}, #{link,jdbcType=VARCHAR}, 
+      #{validStatus,jdbcType=BIT}, #{cTime,jdbcType=TIMESTAMP}, #{uTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select banner_id, img, link, valid_status, c_time, u_time
+    from banner
+  </select>
+</mapper>

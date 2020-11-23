@@ -8,7 +8,7 @@
 	<properties resource="db/db-config.properties"/>
 
 	<!-- jar 包地址-->
-	<classPathEntry location="F:\Java\maven\mvn.3.6.1.repo\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
+	<classPathEntry location="C:\Users\beckham23\.m2\repository\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar"/>
 
 	<context id="context" targetRuntime="MyBatis3Simple">
 		<commentGenerator>
@@ -46,7 +46,7 @@
 
 		<!-- 这里就是每次要修改生成的表 -->
 		<table schema="alumnidb_dev"
-			tableName="demand"
+			tableName="banner"
 			enableCountByExample="true" enableDeleteByExample="true"
 			enableSelectByExample="true" enableUpdateByExample="true">
 		</table>
