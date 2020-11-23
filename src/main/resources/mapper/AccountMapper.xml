@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_background.model.dao.mapper.AccountMapper">
+	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Account">
+		<id column="account_id" jdbcType="BIGINT" property="accountId"/>
+		<result column="name" jdbcType="VARCHAR" property="name"/>
+		<result column="gender" jdbcType="INTEGER" property="gender"/>
+		<result column="birthday" jdbcType="BIGINT" property="birthday"/>
+		<result column="self_desc" jdbcType="VARCHAR" property="selfDesc"/>
+		<result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+		<result column="city" jdbcType="VARCHAR" property="city"/>
+		<result column="openid" jdbcType="VARCHAR" property="openid"/>
+		<result column="phone" jdbcType="VARCHAR" property="phone"/>
+		<result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+		<result column="email" jdbcType="VARCHAR" property="email"/>
+		<result column="industry" jdbcType="VARCHAR" property="industry"/>
+		<result column="type" jdbcType="BIT" property="type"/>
+		<result column="step1_finished" jdbcType="BIT" property="step1Finished"/>
+		<result column="registered" jdbcType="BIT" property="registered"/>
+		<result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+		<result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+		<result column="valid_status" jdbcType="BIT" property="validStatus"/>
+		<result column="verified" jdbcType="BIT" property="verified"/>
+	</resultMap>
+
+	<select id="getAccountsBriefInfos"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.brief_info.AccountBriefInfo">
+		select account.account_id, avatar, name, self_desc,
+		city, verified as is_verified
+		from account
+		where account.valid_status = 1 and account.step1_finished = 1 and account.registered = 1
+		<choose>
+			<when test="hasVerified == -1">
+				and verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+		<choose>
+			<when test="sortedBy == -1">
+				order by account.c_time
+			</when>
+			<when test="sortedBy == 1">
+				order by account.c_time desc
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitName" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS hit_name
+		FROM account
+		WHERE account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		and INSTR(account.`name`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitSelfDesc" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS hit_self_desc
+		FROM account
+		WHERE account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		AND INSTR(account.`self_desc`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitCity" resultType="java.lang.Integer">
+		SELECT COUNT(*) AS hit_city
+		FROM account
+		WHERE account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		AND INSTR(account.`city`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitAccounts"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.brief_info.AccountBriefInfo">
+		select
+		distinct(temp.account_id),
+		temp.avatar,
+		temp.name,
+		temp.self_desc,
+		temp.city,
+		temp.is_verified
+		from (
+		select
+		account.account_id, avatar,
+		name,
+		self_desc,
+		city,
+		verified as is_verified,
+		e.valid_status as evs,
+		e.school as school,
+		e.college as college,
+		j.valid_status as jvs,
+		j.company as company,
+		j.position as position
+		from account
+		left join education e on account.account_id = e.account_id
+		left join job j on account.account_id = j.account_id
+		where account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		<choose>
+			<when test="hasVerified == -1">
+				and verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and verified = 1
+			</when>
+		</choose>
+		<choose>
+			<when test="sortedBy == -1">
+				order by account.c_time
+			</when>
+			<when test="sortedBy == 1">
+				order by account.c_time desc
+			</when>
+			<otherwise/>
+		</choose>
+		) as temp
+		<where>
+			false
+			<if test="inName == true">
+				or INSTR(temp.name, #{keyword}) > 0
+			</if>
+			<if test="inCity == true">
+				or INSTR(temp.city, #{keyword}) > 0
+			</if>
+			<if test="inSelfDesc == true">
+				or INSTR(temp.self_desc, #{keyword}) > 0
+			</if>
+			<if test="inSchool == true">
+				or (temp.evs = 1 and INSTR(temp.school, #{keyword}) > 0)
+			</if>
+			<if test="inCollege == true">
+				or (temp.evs = 1 and INSTR(temp.college, #{keyword}) > 0)
+			</if>
+			<if test="inCompany == true">
+				or (temp.jvs = 1 and INSTR(temp.company, #{keyword}) > 0)
+			</if>
+			<if test="inPosition">
+				or (temp.jvs = 1 and INSTR(temp.position, #{keyword}) > 0)
+			</if>
+		</where>
+	</select>
+	<select id="getAccountFullInfo"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.full_info.AccountFullInfo">
+		select a.account_id,
+		       a.avatar,
+		       a.name,
+		       a.verified as is_verified,
+		       a.c_time,
+		       a.u_time,
+		       a.birthday as long_birthday,
+		       a.city,
+		       a.self_desc,
+		       a.email
+		from account as a
+		where a.account_id = #{accountId}
+		  and a.valid_status = 1
+		  and a.step1_finished = 1
+		  and a.registered = 1
+	</select>
+	<select id="getValidAccount" resultType="cn.edu.seu.alumni_background.model.dao.entity.Account">
+		select *
+		from account as a
+		where a.account_id = #{accountId}
+		  and a.valid_status = 1
+		  and a.step1_finished = 1
+		  and a.registered = 1
+	</select>
+	<select id="getAllAvatars" resultType="java.lang.String">
+		select distinct(account.avatar)
+		from account;
+	</select>
+	<select id="getTotalSEUerNumber" resultType="java.lang.Long">
+		select count(*)
+		from account
+		where registered = 1
+		  and valid_status = 1
+	</select>
+	<select id="getCitiesSEUerNumber" resultType="java.util.Map">
+		SELECT a.`city`, COUNT(*) AS number
+		FROM (
+			     SELECT DISTINCT(e.account_id) AS aid
+			     FROM education AS e
+			     WHERE e.valid_status = 1
+				   AND e.school = '东南大学'
+				   AND EXISTS(
+					     SELECT *
+					     FROM account AS a
+					     WHERE e.account_id = a.account_id
+						   AND a.valid_status = 1
+				     )
+		     ) AS ss
+			     LEFT JOIN account AS a ON ss.aid = a.`account_id`
+		WHERE INSTR(a.`city`, '市') > 0
+		GROUP BY a.`city`
+		ORDER BY number DESC
+	</select>
+	<select id="getAgesSEUerNumber" resultType="java.util.Map">
+		SELECT account.`birthday` FROM account WHERE account.`birthday` IS NOT NULL ORDER BY birthday DESC
+	</select>
+	<select id="getNewcomersNumber" resultType="java.util.Map">
+		SELECT MONTH(DATE(NOW())-DATE(account.`u_time`)) AS mon,COUNT(*) as sum FROM account WHERE MONTH(DATE(NOW())-DATE(account.`u_time`)) IS NOT NULL GROUP BY mon
+	</select>
+</mapper>

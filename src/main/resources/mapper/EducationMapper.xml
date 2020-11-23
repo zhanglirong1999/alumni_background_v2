@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_background.model.dao.mapper.EducationMapper">
+	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Education">
+		<id column="education_id" jdbcType="BIGINT" property="educationId"/>
+		<result column="account_id" jdbcType="BIGINT" property="accountId"/>
+		<result column="education" jdbcType="VARCHAR" property="education"/>
+		<result column="school" jdbcType="VARCHAR" property="school"/>
+		<result column="college" jdbcType="VARCHAR" property="college"/>
+		<result column="start_time" jdbcType="BIGINT" property="startTime"/>
+		<result column="end_time" jdbcType="BIGINT" property="endTime"/>
+		<result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+		<result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+		<result column="valid_status" jdbcType="BIT" property="validStatus"/>
+	</resultMap>
+	<select id="getAccountsEducationBriefInfos"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.brief_info.AccountBriefEduInfo">
+		select e.college, e.school, e.education, e.start_time
+		from education as e
+		where e.valid_status = 1
+		  and e.account_id = #{accountId}
+		order by e.start_time desc
+	</select>
+	<select id="getHitSchool" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT (account.`account_id`)) AS hit_school
+		FROM account
+		LEFT JOIN education AS e ON account.`account_id` = e.`account_id`
+		WHERE account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		AND e.`valid_status` = 1
+		AND INSTR(e.`school`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and account.verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and account.verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitCollege" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT (account.`account_id`)) AS hit_college
+		FROM account
+		LEFT JOIN education AS e ON account.`account_id` = e.`account_id`
+		WHERE account.valid_status = 1
+		and account.step1_finished = 1
+		and account.registered = 1
+		AND e.`valid_status` = 1
+		AND INSTR(e.`college`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and account.verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and account.verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getAccountFullInfoEducations"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.full_info.AccountEduInfo">
+		select e.education_id,
+		       e.school,
+		       e.college,
+		       e.education,
+		       e.start_time as long_start_time,
+		       e.end_time   as long_end_time
+		from account a
+			     left join education e on a.account_id = e.account_id
+		where a.account_id = #{accountId}
+		  and a.valid_status = 1
+		  and a.registered = 1
+		  and a.step1_finished = 1
+		  and e.valid_status = 1
+		order by e.start_time
+	</select>
+	<select id="getValidEducation"
+	        resultType="cn.edu.seu.alumni_background.model.dao.entity.Education">
+		select *
+		from education as e
+		where e.education_id = #{educationId}
+		  and e.valid_status = 1
+	</select>
+	<select id="getCollegesSEUerNumber" resultType="java.util.Map">
+		SELECT e.`college`, COUNT(*) AS number
+		FROM education AS e
+		WHERE e.`valid_status` = 1
+		  AND e.`school` = '东南大学'
+		  AND EXISTS(
+				SELECT *
+				FROM account
+				WHERE account.`account_id` = e.`account_id`
+				  AND account.`valid_status` = 1
+			)
+		GROUP BY e.`college`
+	</select>
+	<select id="getGraduateSEUerNumber" resultType="java.util.Map">
+		SELECT education.`end_time` FROM education WHERE education.`end_time`>0 ORDER BY end_time DESC
+	</select>
+</mapper>

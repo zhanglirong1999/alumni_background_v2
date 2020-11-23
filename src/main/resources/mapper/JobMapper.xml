@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_background.model.dao.mapper.JobMapper">
+	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Job">
+		<id column="job_id" jdbcType="BIGINT" property="jobId"/>
+		<result column="account_id" jdbcType="BIGINT" property="accountId"/>
+		<result column="company" jdbcType="VARCHAR" property="company"/>
+		<result column="position" jdbcType="VARCHAR" property="position"/>
+		<result column="start_time" jdbcType="BIGINT" property="startTime"/>
+		<result column="end_time" jdbcType="BIGINT" property="endTime"/>
+		<result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+		<result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+		<result column="valid_status" jdbcType="BIT" property="validStatus"/>
+	</resultMap>
+	<select id="getAccountsJobBriefInfos"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.brief_info.AccountBriefJobInfo">
+		select j.company, j.position
+		from job as j
+		where j.valid_status = 1
+		  and j.account_id = #{accountId}
+		ORDER BY j.`start_time` DESC, j.`c_time` DESC
+	</select>
+	<select id="getHitCompany" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT (account.`account_id`)) AS hit_company
+		FROM account
+			     LEFT JOIN job ON account.`account_id` = job.`account_id`
+		WHERE account.valid_status = 1
+		  and account.step1_finished = 1
+		  and account.registered = 1
+		  AND job.`valid_status` = 1
+		  AND INSTR(job.`company`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and account.verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and account.verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getHitPosition" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT (account.`account_id`)) AS hit_position
+		FROM account
+			     LEFT JOIN job ON account.`account_id` = job.`account_id`
+		WHERE account.valid_status = 1
+		  and account.step1_finished = 1
+		  and account.registered = 1
+		  AND job.`valid_status` = 1
+		  AND INSTR(job.`position`, #{keyword}) > 0
+		<choose>
+			<when test="hasVerified == -1">
+				and account.verified = 0
+			</when>
+			<when test="hasVerified == 1">
+				and account.verified = 1
+			</when>
+			<otherwise/>
+		</choose>
+	</select>
+	<select id="getAccountFullInfoJobs"
+	        resultType="cn.edu.seu.alumni_background.model.dto.accounts.full_info.AccountJobInfo">
+		select j.job_id, j.company, j.position
+		from account a left join job j on a.account_id = j.account_id
+		where a.account_id = #{accountId} and
+		      a.valid_status = 1 and
+		      a.registered = 1 and
+		      a.step1_finished = 1 and
+		      j.valid_status = 1
+		order by j.start_time, j.c_time
+	</select>
+	<select id="getValidJob" resultType="cn.edu.seu.alumni_background.model.dao.entity.Job">
+		select *
+		from job
+		where job.job_id = #{jobId} and job.valid_status = 1
+	</select>
+	<select id="getIndustriesNumber" resultType="java.util.Map">
+		SELECT	job.`company` FROM job WHERE job.`company` IS NOT NULL
+	</select>
+	<select id="getJobsNumber" resultType="java.util.Map">
+		SELECT	job.`position` FROM job WHERE job.`position` IS NOT NULL
+	</select>
+</mapper>

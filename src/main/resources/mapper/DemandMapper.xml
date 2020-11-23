@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_background.model.dao.mapper.DemandMapper">
+	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_background.model.dao.entity.Demand">
+		<id column="demand_id" jdbcType="BIGINT" property="demandId"/>
+		<result column="demand_name" jdbcType="VARCHAR" property="demandName"/>
+		<result column="account_id" jdbcType="BIGINT" property="accountId"/>
+		<result column="type" jdbcType="INTEGER" property="type"/>
+		<result column="tag1" jdbcType="VARCHAR" property="tag1"/>
+		<result column="tag2" jdbcType="VARCHAR" property="tag2"/>
+		<result column="tag3" jdbcType="VARCHAR" property="tag3"/>
+		<result column="tag4" jdbcType="VARCHAR" property="tag4"/>
+		<result column="tag5" jdbcType="VARCHAR" property="tag5"/>
+		<result column="details" jdbcType="VARCHAR" property="details"/>
+		<result column="img1" jdbcType="VARCHAR" property="img1"/>
+		<result column="img2" jdbcType="VARCHAR" property="img2"/>
+		<result column="img3" jdbcType="VARCHAR" property="img3"/>
+		<result column="img4" jdbcType="VARCHAR" property="img4"/>
+		<result column="img5" jdbcType="VARCHAR" property="img5"/>
+		<result column="img6" jdbcType="VARCHAR" property="img6"/>
+		<result column="valid_status" jdbcType="BIT" property="validStatus"/>
+		<result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+		<result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+	</resultMap>
+	<select id="getDemandsNumber" resultType="java.util.Map">
+		SELECT d.`type` AS d_type, COUNT(*) AS d_number
+		FROM demand AS d
+		WHERE d.`valid_status` = 1
+		GROUP BY d.`type`
+		ORDER BY d.`type`
+	</select>
+</mapper>
