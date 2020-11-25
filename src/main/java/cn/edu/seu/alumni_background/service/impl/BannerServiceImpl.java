@@ -4,6 +4,7 @@ import cn.edu.seu.alumni_background.error.ServiceException;
 import cn.edu.seu.alumni_background.model.dao.entity.Banner;
 import cn.edu.seu.alumni_background.model.dao.mapper.BannerMapper;
 import cn.edu.seu.alumni_background.service.BannerService;
+import cn.edu.seu.alumni_background.util.IDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,11 +36,15 @@ public class BannerServiceImpl implements BannerService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void addBanner(Banner newBanner) {
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        newBanner.setCTime(now);
-        newBanner.setUTime(now);
-        newBanner.setValidStatus(1);
-        bannerMapper.insertWithoutId(newBanner);
+//        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+//        Long id = IDUtil.nextId();
+//        newBanner.setBannerId(id);
+//        System.out.println(id);
+//        newBanner.setCTime(now);
+//        newBanner.setUTime(now);
+//        newBanner.setValidStatus(1);
+        newBanner.setBannerId(IDUtil.nextId());
+        bannerMapper.insertNewBanner(newBanner);
     }
 
     @Override
@@ -48,8 +53,6 @@ public class BannerServiceImpl implements BannerService {
         if (!hasValidBanner(newBanner.getBannerId())) {
             throw new ServiceException("当前修改Banner id: " + newBanner.getBannerId() + "不存在！");
         }
-        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        newBanner.setUTime(now);
         bannerMapper.update(newBanner);
     }
 

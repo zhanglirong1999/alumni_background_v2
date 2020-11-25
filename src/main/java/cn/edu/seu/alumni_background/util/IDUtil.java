@@ -8,6 +8,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class IDUtil {
+    public static IdGenerator idGenerator;
+    static {
+        idGenerator = new IdGenerator();
+    }
+
+    public static long nextId() {
+        return idGenerator.nextId();
+    }
 
     public static String getRepeatableVerifyNumberCode(int len) {
         // 生成六位可重复数字串

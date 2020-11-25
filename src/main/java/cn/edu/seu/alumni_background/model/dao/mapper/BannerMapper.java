@@ -9,7 +9,7 @@ import java.util.List;
 public interface BannerMapper extends Mapper<Banner> {
     void update(Banner newBanner);
     Banner getValidBanner(Long bannerId);
-    void insertWithoutId(Banner newBanner);
+    void insertNewBanner(Banner newBanner);
     List<Banner> selectAllValidBanners();
     void deleteById(Long bannerId);
 }
