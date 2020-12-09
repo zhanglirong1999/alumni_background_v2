@@ -16,7 +16,7 @@ import java.io.IOException;
 @WebResponseController
 @RestController
 //TODO: better way to solve cross origins problem
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin
 public class CommonController {
     private COSManager cosManager;
 
