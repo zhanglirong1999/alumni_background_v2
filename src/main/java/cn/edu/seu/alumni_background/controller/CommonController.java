@@ -15,8 +15,6 @@ import java.io.IOException;
 @TokenRequired
 @WebResponseController
 @RestController
-//TODO: better way to solve cross origins problem
-@CrossOrigin
 public class CommonController {
     private COSManager cosManager;
 
