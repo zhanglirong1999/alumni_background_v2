@@ -2,12 +2,14 @@ package cn.edu.seu.alumni_background.controller;
 
 import cn.edu.seu.alumni_background.aspect.WebResponseController;
 import cn.edu.seu.alumni_background.error.ServiceException;
+import cn.edu.seu.alumni_background.log.annotation.LogController;
 import cn.edu.seu.alumni_background.service.DatumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@LogController
 @WebResponseController
 @RestController
 @RequestMapping("/datum")

@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_background.controller;
 import cn.edu.seu.alumni_background.aspect.WebResponseController;
 import cn.edu.seu.alumni_background.config.interceptor.TokenRequired;
 import cn.edu.seu.alumni_background.error.ServiceException;
+import cn.edu.seu.alumni_background.log.annotation.LogController;
 import cn.edu.seu.alumni_background.model.dto.accounts.for_post.AccountBasicInfo;
 import cn.edu.seu.alumni_background.model.dto.accounts.for_post.AccountEduInfo;
 import cn.edu.seu.alumni_background.model.dto.accounts.for_post.AccountJobInfo;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+@LogController
 @TokenRequired
 @WebResponseController
 @RestController

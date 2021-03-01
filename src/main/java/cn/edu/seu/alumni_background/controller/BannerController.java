@@ -9,7 +9,7 @@ import cn.edu.seu.alumni_background.service.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-//@TokenRequired
+@TokenRequired
 @LogController
 @WebResponseController
 @RestController
