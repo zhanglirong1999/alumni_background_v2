@@ -4,13 +4,10 @@
         <Property name="LOG_HOME">./logs</Property>
     </Properties>
     <Appenders>
-        <Console name="consoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d [%-5p] [%l] %m%n"/>
-        </Console>
 
         <RollingFile name="infoFileAppender" fileName="${LOG_HOME}/info.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/info-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
-                <Pattern>%d [%-5p] [%l] %m%n</Pattern>
+                <Pattern>%d %p %style{ %t [%c{1.} %M %L]}{Cyan} : %m%n</Pattern>
             </PatternLayout>
 
             <Filters>
@@ -27,7 +24,7 @@
 
         <RollingFile name="warnFileAppender" fileName="${LOG_HOME}/warn.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/warn-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
-                <Pattern>%d [%-5p] [%l] %m%n</Pattern>
+                <Pattern>%d %p %style{ %t [%c{1.} %M %L]}{Cyan} : %m%n</Pattern>
             </PatternLayout>
 
             <Filters>
@@ -44,7 +41,7 @@
 
         <RollingFile name="errorFileAppender" fileName="${LOG_HOME}/error.log" filePattern="${LOG_HOME}/$${date:yyyy-MM}/error-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
-                <Pattern>%d [%-5p] [%l] %m%n</Pattern>
+                <Pattern>%d %p %style{ %t [%c{1.} %M %L]}{Cyan} : %m%n</Pattern>
             </PatternLayout>
 
             <Filters>
