@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_background.controller;
 
 import cn.edu.seu.alumni_background.aspect.WebResponseController;
 import cn.edu.seu.alumni_background.error.ServiceException;
+import cn.edu.seu.alumni_background.log.annotation.LogController;
 import cn.edu.seu.alumni_background.model.dto.verify.PhoneUsernameCodeVerifier;
 import cn.edu.seu.alumni_background.model.dto.verify.PhoneUsernameVerifier;
 import cn.edu.seu.alumni_background.service.VerifyService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 
+@LogController
 @RestController
 @RequestMapping("/verify")
 @WebResponseController

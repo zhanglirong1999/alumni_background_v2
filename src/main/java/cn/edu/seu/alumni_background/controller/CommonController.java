@@ -4,6 +4,7 @@ import cn.edu.seu.alumni_background.aspect.WebResponseController;
 import cn.edu.seu.alumni_background.component.cos.COSManager;
 import cn.edu.seu.alumni_background.config.interceptor.TokenRequired;
 import cn.edu.seu.alumni_background.error.ServiceException;
+import cn.edu.seu.alumni_background.log.annotation.LogController;
 import cn.edu.seu.alumni_background.util.IDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+@LogController
 @TokenRequired
 @WebResponseController
 @RestController
